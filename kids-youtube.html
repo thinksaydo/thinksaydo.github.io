@@ -15,13 +15,17 @@
   </head>
   <body class="flex justify-center items-center h-screen">
     <h1>Kids YouTube</h1>
+    <div class="videos text-center"></div>
   </body>
   <script type="text/javascript">
     main();
 
     async function main() {
       const videos = getVideos();
-      console.log(videos);
+      let videosHTML = '';
+      videos.items.forEach((video) => {
+        videosHTML = `${videosHTML}<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${video.contentDetails.videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br /><br />`;
+      });
     }
 
     async function getVideos() {
