@@ -18,7 +18,7 @@
     <div id="videos" class="videos text-center"></div>
   </body>
   <script type="text/javascript">
-    main();
+    await main();
 
     async function main() {
       renderVideos(await getVideos('UUAW-NpUFkMyCNrvRSSGIvDQ'));
@@ -33,7 +33,9 @@
     
     function renderVideos(videos) {
       let videosHTML = '';
+      console.log(videos, videos.items);
       videos.items.forEach((video) => {
+        console.log(video);
         videosHTML = `${videosHTML}<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${video.contentDetails.videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br /><br />`;
       });
       console.log(videosHTML);
