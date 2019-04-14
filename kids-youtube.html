@@ -15,23 +15,28 @@
   </head>
   <body class="flex justify-center items-center h-screen">
     <h1>Kids YouTube</h1>
-    <div class="videos text-center"></div>
+    <div id="videos" class="videos text-center"></div>
   </body>
   <script type="text/javascript">
     main();
 
     async function main() {
-      const videos = getVideos();
+      renderVideos(getVideos('UUAW-NpUFkMyCNrvRSSGIvDQ'));
+    }
+
+    async function getVideos(playlistId) {
+      const key = 'AIzaSyDC21idmQvGvmvdtLZFisTju2pgA9cWSfU';
+      return await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${playlistId}&key=${key}`
+      ).then(res => JSON.parse(res));
+    }
+    
+    function renderVideos(videos) {
       let videosHTML = '';
       videos.items.forEach((video) => {
         videosHTML = `${videosHTML}<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${video.contentDetails.videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br /><br />`;
       });
-    }
-
-    async function getVideos() {
-      return await fetch(
-        "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=UUAW-NpUFkMyCNrvRSSGIvDQ&key=AIzaSyDC21idmQvGvmvdtLZFisTju2pgA9cWSfU"
-      ).then(res => JSON.parse(res));
-    }
+      console.log(videosHTML);
+      document.querySelector('#videos').innerHTML = videosHTML;
   </script>
 </html>
