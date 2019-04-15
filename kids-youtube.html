@@ -8,38 +8,53 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- <link
         href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"
         rel="stylesheet"
       /> -->
   </head>
-  <body class="flex justify-center items-center h-screen">
-    <h1>Kids YouTube</h1>
-    <div id="videos" class="videos text-center"></div>
+  <body>
+    <p id="quick-links" class="text-center"><a name="top"></a></p>
+    <div id="videos" class="text-center"></div>
   </body>
   <script type="text/javascript">
     main();
 
     async function main() {
-      renderVideos(await getVideos('UUAW-NpUFkMyCNrvRSSGIvDQ'));
+      const playlists = [
+        { id: "UUfjLwqL4XSPUDT7hVnViCmw", title: "Ronald" },
+        { id: "UUAW-NpUFkMyCNrvRSSGIvDQ", title: "Ninja" },
+        { id: "UUt9nYeSz90lnOnaVFjxFJzw", title: "Nick Eh 30" },
+        { id: "UUBg0W_TeszBzIkZmYx6-VLA", title: "Reverse 2K" }
+      ];
+      playlists.forEach(async playlist => {
+        let qlContainer = document.querySelector("#quick-links");
+        qlContainer.innerHTML =
+          qlContainer.innerHTML +
+          `<a href="#${playlist.title}">${playlist.title}</a> &nbsp; &nbsp;`;
+        await getVideos(playlist.id, playlist.title);
+      });
     }
 
-    async function getVideos(playlistId) {
-      const key = 'AIzaSyDC21idmQvGvmvdtLZFisTju2pgA9cWSfU';
-      return await fetch(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${playlistId}&key=${key}`
-      ).then(res => JSON.parse(res));
+    async function getVideos(playlistId, playlistTitle) {
+      const key = "AIzaSyDC21idmQvGvmvdtLZFisTju2pgA9cWSfU";
+      $.get(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=10&playlistId=${playlistId}&key=${key}`,
+        videos => renderVideos(videos, playlistTitle)
+      );
     }
-    
-    function renderVideos(videos) {
-      let videosHTML = '';
-      console.log(videos, videos.items);
-      videos.items.forEach((video) => {
-        console.log(video);
-        videosHTML = `${videosHTML}<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${video.contentDetails.videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br /><br />`;
+
+    function renderVideos(videos, title) {
+      let videosContainer = document.querySelector("#videos");
+      let videosHTML = `<a name="${title}"></a><h1>${title}</h1>`;
+      videos.items.forEach(video => {
+        videosHTML = `${videosHTML}<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${
+          video.contentDetails.videoId
+        }" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br /><br />`;
       });
-      console.log(videosHTML);
-      document.querySelector('#videos').innerHTML = videosHTML;
+      videosHTML = `${videosHTML} <a href="#top">TOP</a><hr />`;
+      videosContainer.innerHTML = videosContainer.innerHTML + videosHTML;
     }
   </script>
 </html>
